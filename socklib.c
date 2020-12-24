@@ -50,3 +50,29 @@ int make_server_socket_q(int portnum, int backlog)
     return sock_id;
 }
 
+
+int connect_to_server(char *host, int portnum)
+{
+    int sock_id;
+    struct sockaddr_in servadd;
+    struct hostent *hp;
+
+    sock_id = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock_id == -1)
+        return -1;
+
+    bzero(&servadd, sizeof(servadd));
+    // hp = gethostbyname( host );  /* lookup host's ip #   */
+    //if (hp == NULL)
+    //    return -1;
+    // bcopy(hp->h_addr, (struct sockaddr *)&servadd.sin_addr, hp->h_length);
+    //
+    servadd.sin_addr.s_addr = inet_addr(host);
+    servadd.sin_port = htons(portnum);
+    servadd.sin_family = AF_INET;
+
+    if (connect(sock_id, (struct sockaddr *) &servadd, sizeof(servadd)) != 0)
+        return -1;
+
+    return sock_id;
+}
